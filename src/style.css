@@ -190,21 +190,6 @@ span {
 
 /* Content Sectioning */
 
-main {
-}
-
-header {
-}
-
-footer {
-}
-
-nav {
-}
-
-section {
-}
-
 .link {
   text-decoration: none;
 }
@@ -250,22 +235,13 @@ dd {
   padding-bottom: 11px;
 }
 
-dl {
-}
-
 dt {
   font-weight: bold;
-}
-
-figure {
 }
 
 figcaption {
   padding-top: 10px;
   font-size: 0.8rem;
-}
-
-hr {
 }
 
 ul,
@@ -425,15 +401,6 @@ tbody tr:nth-child(even):hover td {
   background-color: var(--background-muted);
 }
 
-/* Form elements */
-input,
-button,
-select,
-optgroup,
-textarea {
-  /* margin: 0; */
-}
-
 button,
 select,
 input[type='submit'],
@@ -491,7 +458,6 @@ select {
   padding: 0.5rem 0.75rem;
   border-radius: var(--border-radius-small);
   width: 100%;
-  /* max-width: fit-content; */
   outline: none;
   appearance: none;
 }
@@ -523,8 +489,6 @@ input[type='radio'] {
   vertical-align: middle;
   position: relative;
   margin: 0.5rem 0.25rem 0.5rem 0.5rem;
-  /* margin-right: 0.33em;
-    margin-top: 0.31em; */
 }
 
 input[type='checkbox'] {

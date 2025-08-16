@@ -20,8 +20,10 @@ const handleSaveWorkout = (event: any) => {
     <section id="workout-card">
         <div class="plan-card card">
             <div class="plan-card-header">
-                <Text as="p">Day {{ workoutId < 9 ? '0' + (workoutId + 1) : (workoutId + 1) }}</Text>
-                        <WorkoutIcon :index="workoutId" />
+                <Text as="p">
+                    <strong>Day {{ workoutId < 9 ? '0' + (workoutId + 1) : workoutId + 1 }}</strong>
+                </Text>
+                <WorkoutIcon :index="workoutId" />
             </div>
 
             <Text as="h2">{{ workoutType[workoutId % 3] }} Workout</Text>
@@ -36,7 +38,7 @@ const handleSaveWorkout = (event: any) => {
             <div class="workout-grid-row" v-for="(w, wIdx) in warmup" :key="wIdx">
                 <div class="grid-name">
                     <Text as="p">{{ w.name }}</Text>
-                    <button @click="() => selectedExercise = w.name">
+                    <button @click="() => (selectedExercise = w.name)">
                         <i class="fa-regular fa-circle-question" />
                     </button>
                 </div>
@@ -57,7 +59,7 @@ const handleSaveWorkout = (event: any) => {
             <div class="workout-grid-row" v-for="(w, wIdx) in workout" :key="wIdx">
                 <div class="grid-name">
                     <Text as="p">{{ w.name }}</Text>
-                    <button @click="() => selectedExercise = w.name">
+                    <button @click="() => (selectedExercise = w.name)">
                         <i class="fa-regular fa-circle-question" />
                     </button>
                 </div>
@@ -68,13 +70,9 @@ const handleSaveWorkout = (event: any) => {
         </div>
 
         <div class="card workout-btns">
-            <button @click="handleSaveWorkout">
-                Save & Exit <i class="fa-solid fa-save" />
-            </button>
+            <button @click="handleSaveWorkout">Save & Exit <i class="fa-solid fa-save" /></button>
 
-            <button @click="handleSaveWorkout">
-                Complete <i class="fa-solid fa-check" />
-            </button>
+            <button @click="handleSaveWorkout">Complete <i class="fa-solid fa-check" /></button>
         </div>
     </section>
 </template>
