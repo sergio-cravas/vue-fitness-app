@@ -205,6 +205,10 @@ nav {
 section {
 }
 
+.link {
+  text-decoration: none;
+}
+
 address {
   font-style: normal;
 }

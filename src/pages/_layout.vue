@@ -1,7 +1,9 @@
 <template>
     <div class="layout">
         <header>
-            <Text as="h1" class="text-gradient">Fitnera</Text>
+            <RouterLink to="/" class="link">
+                <Text as="h1" class="text-gradient">Fitnera</Text>
+            </RouterLink>
         </header>
 
         <main class="main-content">

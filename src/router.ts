@@ -7,7 +7,7 @@ import Workout from './pages/workout.vue';
 const routes = [
     { path: '/', component: Welcome },
     { path: '/dashboard', component: Dashboard },
-    { path: '/workout', component: Workout },
+    { path: '/workout/:id', component: Workout },
 ]
 
 const router = createRouter({

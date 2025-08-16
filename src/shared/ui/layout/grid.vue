@@ -1,35 +1,40 @@
-<script setup>
-import { workoutProgram } from '../../utils/workout-contents';
+<script setup lang="ts">
+import { workoutProgram, workoutType } from '../../utils/workout-contents';
 import Text from '../core/text.vue';
 
-defineProps({
-    handleSelectWorkout: Function,
-    firstIncompleteWorkoutIndex: Number,
-    handleResetPlan: Function
-})
+// Define component props interface
+interface Props {
+    firstIncompleteWorkoutIndex: number;
+    handleResetPlan: () => void;
+    handleSelectWorkout: (id: number) => void;
+}
 
-const workoutTypes = ['Push', 'Pull', 'Legs']
+// Define props with defaults
+withDefaults(defineProps<Props>(), {
+    firstIncompleteWorkoutIndex: 0,
+    handleResetPlan: () => { },
+    handleSelectWorkout: () => { }
+})
 </script>
 
 <template>
     <section id="grid">
-        <button :disabled="workoutIdx > 0 && workoutIdx > firstIncompleteWorkoutIndex"
-            @click="() => handleSelectWorkout(workoutIdx)" :key="workoutIdx"
-            v-for="(workout, workoutIdx) in Object.keys(workoutProgram)" class="card-button plan-card">
+        <button :key="index" class="card-button plan-card" v-for="(_, index) in Object.keys(workoutProgram)"
+            @click="() => handleSelectWorkout(index)" :disabled="index > 0 && index > firstIncompleteWorkoutIndex">
             <div>
-                <p>Day {{ workoutIdx < 9 ? '0' + (workoutIdx + 1) : workoutIdx + 1 }}</p>
-                        <i class="fa-solid fa-dumbbell" v-if="workoutIdx % 3 == 0"></i>
-                        <i class='fa-solid fa-weight-hanging' v-if="workoutIdx % 3 == 1"></i>
-                        <i class="fa-solid fa-bolt" v-if="workoutIdx % 3 == 2"></i>
+                <p>Day {{ index < 9 ? '0' + (index + 1) : index + 1 }}</p>
+                        <i class="fa-solid fa-dumbbell" v-if="index % 3 == 0"></i>
+                        <i class='fa-solid fa-weight-hanging' v-if="index % 3 == 1"></i>
+                        <i class="fa-solid fa-bolt" v-if="index % 3 == 2"></i>
             </div>
 
-            <Text as="h3">{{ workoutTypes[workoutIdx % 3] }}</Text>
+            <Text as="h3">{{ workoutType[index % 3] }}</Text>
         </button>
 
         <button :disabled="firstIncompleteWorkoutIndex != -1" @click="handleResetPlan"
             class="card-button plan-card-reset">
-            <p>Reset</p>
-            <i class="fa-solid fa-rotate-left"></i>
+            <Text as="p">Reset</Text>
+            <i class="fa-solid fa-rotate-left" />
         </button>
     </section>
 </template>
@@ -38,6 +43,7 @@ const workoutTypes = ['Push', 'Pull', 'Legs']
 #grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+
     gap: 1rem;
 }
 

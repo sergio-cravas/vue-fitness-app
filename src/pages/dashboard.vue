@@ -10,8 +10,8 @@ const todaysFact = gymHealthFacts[randomNumber];
 
 const router = useRouter();
 
-const navigateToWorkout = () => {
-    router.push('/workout');
+const navigateToWorkout = (id: number = 0) => {
+    router.push('/workout/' + id);
 };
 </script>
 
@@ -28,10 +28,11 @@ const navigateToWorkout = () => {
                 </Text>
             </div>
 
-            <button @click="navigateToWorkout">Start workout &rarr;</button>
+            <button @click="() => navigateToWorkout(0)">Start workout &rarr;</button>
         </div>
 
-        <Grid />
+        <Grid :first-incomplete-workout-index="0" :handle-select-workout="navigateToWorkout"
+            :handle-reset-plan="() => { }" />
     </section>
 </template>
 
