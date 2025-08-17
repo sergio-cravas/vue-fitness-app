@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
+import { useWorkoutDataStore } from '../shared/store';
 import Button from '../shared/ui/core/button.vue';
 import Text from '../shared/ui/core/text.vue';
 import WorkoutIcon from '../shared/ui/core/workout-icon.vue';
@@ -10,19 +11,29 @@ import Portal from '../shared/ui/layout/portal.vue';
 import { exerciseDescriptions, workoutProgram, workoutType } from '../shared/utils/workout-contents';
 
 const route = useRoute();
+const router = useRouter();
+const { workoutData, saveData, isWorkoutCompleted } = useWorkoutDataStore();
 
 const workoutId = Number(route.params.id);
 const { workout, warmup } = workoutProgram[workoutId as keyof typeof workoutProgram];
 
+let allowToComplete = computed(() => isWorkoutCompleted(workoutId));
 let selectedExercise = ref<keyof typeof exerciseDescriptions | null>(null);
 let selectedDescription = computed(() => (selectedExercise.value ? exerciseDescriptions[selectedExercise.value] : ''));
 
-const handleSaveWorkout = (event: any) => {
-  console.log({ event });
-};
+let workoutWithValues = computed(() =>
+  workout.map((item) => ({
+    ...item,
+    value: workoutData?.[workoutId]?.workout?.[item.name],
+  }))
+);
 
-const handleCompleteWorkout = (event: any) => {
-  console.log({ event });
+const handleSaveWorkout = (complete: boolean = false) => {
+  let data = workoutWithValues.value.reduce((curr, prev) => ({ ...curr, [prev.name]: prev.value }), {});
+
+  saveData(workoutId, data);
+
+  if (complete) router.push('/dashboard');
 };
 
 const handleOnClosePortal = () => {
@@ -68,12 +79,13 @@ const handleUpdateExercise = (value: string) => {
 
       <div class="workout-grid-line" />
 
-      <WorkoutSection title="Warmup" :data="workout" :update-exercise="handleUpdateExercise" />
+      <WorkoutSection title="Warmup" :data="workoutWithValues" :update-exercise="handleUpdateExercise" />
     </div>
 
     <div class="card workout-btns">
-      <Button full-width text="Save & Exit" icon="fa-solid fa-save" @click="handleSaveWorkout" />
-      <Button full-width text="Complete" icon="fa-solid fa-check" variant="success" @click="handleCompleteWorkout" />
+      <Button full-width text="Save & Exit" icon="fa-solid fa-save" @click="() => handleSaveWorkout()" />
+
+      <Button full-width text="Complete" icon="fa-solid fa-check" variant="success" :disabled="!allowToComplete" @click="() => handleSaveWorkout(true)" />
     </div>
   </section>
 </template>

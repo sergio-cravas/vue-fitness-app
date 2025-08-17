@@ -5,6 +5,7 @@ interface Exercise {
   name: string;
   sets: number;
   reps: number;
+  value?: string;
 }
 
 // Define component props interface
@@ -43,7 +44,7 @@ const handleUpdateExercise = (name: string) => {
 
     <Text as="p">{{ w.sets }}</Text>
     <Text as="p">{{ w.reps }}</Text>
-    <input class="grid-weights" placeholder="14kg" type="text" :disabled="inputDisabled" />
+    <input class="grid-weights" placeholder="14kg" type="text" :disabled="inputDisabled" v-model="w.value" />
   </div>
 </template>
 

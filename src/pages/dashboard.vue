@@ -1,64 +1,65 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 
+import { useWorkoutDataStore } from '../shared/store';
 import Text from '../shared/ui/core/text.vue';
 import Grid from '../shared/ui/layout/grid.vue';
 import { gymHealthFacts } from '../shared/utils/workout-contents';
 
+const router = useRouter();
+const { firstIncompleteWorkoutIndex, clearData } = useWorkoutDataStore();
+
 const randomNumber = Math.floor(Math.random() * gymHealthFacts.length);
 const todaysFact = gymHealthFacts[randomNumber];
 
-const router = useRouter();
-
 const navigateToWorkout = (id: number = 0) => {
-    router.push('/workout/' + id);
+  router.push('/workout/' + id);
 };
 </script>
 
 <template>
-    <section id="dashboard">
-        <div class="card tip-container">
-            <Text as="h2">Welcome back!</Text>
+  <section id="dashboard">
+    <div class="card tip-container">
+      <Text as="h2">Welcome back!</Text>
 
-            <div>
-                <Text as="p" class="tip">
-                    <strong>💡 Daily tips</strong>
-                    <br />
-                    {{ todaysFact }}
-                </Text>
-            </div>
+      <div>
+        <Text as="p" class="tip">
+          <strong>💡 Daily tips</strong>
+          <br />
+          {{ todaysFact }}
+        </Text>
+      </div>
 
-            <button @click="() => navigateToWorkout(0)">Start workout &rarr;</button>
-        </div>
+      <button @click="() => navigateToWorkout(0)">Start workout &rarr;</button>
+    </div>
 
-        <Grid :first-incomplete-workout-index="0" :handle-select-workout="navigateToWorkout"
-            :handle-reset-plan="() => { }" />
-    </section>
+    <Grid :first-incomplete-workout-index="firstIncompleteWorkoutIndex" :handle-select-workout="navigateToWorkout" :handle-reset-plan="clearData" />
+  </section>
 </template>
 
 <style scoped>
 .tip-container,
 .tip-container div,
 #dashboard {
-    display: flex;
+  display: flex;
 }
 
 .tip-container,
 #dashboard {
-    flex-direction: column;
+  flex-direction: column;
 }
 
 #dashboard {
-    gap: 2rem;
+  gap: 2rem;
 }
 
 .tip-container {
-    gap: 0.5rem;
+  gap: 0.5rem;
 }
 
 @media (min-width: 640px) {
-    .tip-container {
-        gap: 1rem;
-    }
+  .tip-container {
+    gap: 1rem;
+  }
 }
 </style>
