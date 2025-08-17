@@ -1,24 +1,58 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
+
+import Button from '../shared/ui/core/button.vue';
 import Text from '../shared/ui/core/text.vue';
 import WorkoutIcon from '../shared/ui/core/workout-icon.vue';
 import WorkoutSection from '../shared/ui/custom/workout-section.vue';
-import { workoutProgram, workoutType } from '../shared/utils/workout-contents';
+import Portal from '../shared/ui/layout/portal.vue';
+import { exerciseDescriptions, workoutProgram, workoutType } from '../shared/utils/workout-contents';
 
 const route = useRoute();
 
 const workoutId = Number(route.params.id);
 const { workout, warmup } = workoutProgram[workoutId as keyof typeof workoutProgram];
 
-let selectedExercise = ref<any>(null);
+let selectedExercise = ref<keyof typeof exerciseDescriptions | null>(null);
+let selectedDescription = computed(() => (selectedExercise.value ? exerciseDescriptions[selectedExercise.value] : ''));
 
 const handleSaveWorkout = (event: any) => {
   console.log({ event });
 };
+
+const handleCompleteWorkout = (event: any) => {
+  console.log({ event });
+};
+
+const handleOnClosePortal = () => {
+  selectedExercise.value = null;
+};
+
+const handleUpdateExercise = (value: string) => {
+  if (value in exerciseDescriptions) {
+    selectedExercise.value = value as keyof typeof exerciseDescriptions;
+  } else {
+    console.warn(`Exercise "${value}" not found in exerciseDescriptions`);
+    selectedExercise.value = null;
+  }
+};
 </script>
 
 <template>
+  <Portal v-if="!!selectedExercise" @close="handleOnClosePortal">
+    <div class="exercise-description">
+      <Text as="h3">{{ selectedExercise }}</Text>
+
+      <div>
+        <Text as="small">Description</Text>
+        <Text as="p">{{ selectedDescription }}</Text>
+      </div>
+
+      <Button icon="fa-solid fa-xmark" text="Close" @click="handleOnClosePortal" />
+    </div>
+  </Portal>
+
   <section id="workout-card">
     <div class="plan-card card">
       <div class="plan-card-header">
@@ -30,17 +64,16 @@ const handleSaveWorkout = (event: any) => {
     </div>
 
     <div class="workout-grid">
-      <WorkoutSection title="Warmup" :data="warmup" input-disabled :update-exercise="(name) => (selectedExercise = name)" />
+      <WorkoutSection title="Warmup" :data="warmup" input-disabled :update-exercise="handleUpdateExercise" />
 
       <div class="workout-grid-line" />
 
-      <WorkoutSection title="Warmup" :data="workout" :update-exercise="(name) => (selectedExercise = name)" />
+      <WorkoutSection title="Warmup" :data="workout" :update-exercise="handleUpdateExercise" />
     </div>
 
     <div class="card workout-btns">
-      <button @click="handleSaveWorkout">Save & Exit <i class="fa-solid fa-save" /></button>
-
-      <button @click="handleSaveWorkout">Complete <i class="fa-solid fa-check" /></button>
+      <Button full-width text="Save & Exit" icon="fa-solid fa-save" @click="handleSaveWorkout" />
+      <Button full-width text="Complete" icon="fa-solid fa-check" variant="success" @click="handleCompleteWorkout" />
     </div>
   </section>
 </template>
@@ -76,14 +109,6 @@ const handleSaveWorkout = (event: any) => {
   height: 3px;
   border-radius: 2px;
   background: var(--background-muted);
-}
-
-.workout-btns button {
-  flex: 1;
-}
-
-.workout-btns button i {
-  padding-left: 0.5rem;
 }
 
 .exercise-description {
